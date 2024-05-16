@@ -1,12 +1,14 @@
 [tool.poetry]
-name = "nome-do-projeto"
+name = "bookstore"
 version = "0.1.0"
-description = "Descrição do projeto"
-authors = ["Seu Nome <seu@email.com>"]
+description = ""
+authors = ["Nikooooh <nicolastrevis@hotmail.com>"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.12"
+
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
