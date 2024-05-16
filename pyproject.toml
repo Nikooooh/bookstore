@@ -1,13 +1,17 @@
 [tool.poetry]
 name = "bookstore"
 version = "0.1.0"
-description = ""
+description = "Book Store APP"
 authors = ["Nikooooh <nicolastrevis@hotmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+django = "^5.0.6"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+factory-boy = "^3.3.0"
 
 [build-system]
 requires = ["poetry-core"]
