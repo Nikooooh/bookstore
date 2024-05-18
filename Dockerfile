@@ -1,65 +1,52 @@
-# `python-base` sets up all our shared environment variables
-FROM python:3.8.1-slim as python-base
+# Usando python:3.12-slim
+FROM python:3.12-slim as python-base
 
-# python
+# Configurações do ambiente Python e Poetry
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    \
-    # pip
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    \
-    # poetry
-    POETRY_VERSION=1.0.3 \
+    POETRY_VERSION=1.3.2 \
     POETRY_HOME="/opt/poetry" \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     POETRY_NO_INTERACTION=1 \
-    \
-    # paths
     PYSETUP_PATH="/opt/pysetup" \
     VENV_PATH="/opt/pysetup/.venv"
 
-# prepend poetry and venv to path
+# Adiciona Poetry e virtualenv ao PATH
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
+# Instala dependências do sistema e Python, incluindo curl e build-essential
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         curl \
         build-essential \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# install poetry
-RUN curl -sSL https://install.python-poetry.org | python -
-
-# install postgres dependencies
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
         libpq-dev \
         gcc \
-    && pip install psycopg2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# copy project requirement files
+# Instala o Poetry
+RUN curl -sSL https://install.python-poetry.org | python -
+
+# Define o diretório de trabalho para o Poetry
 WORKDIR $PYSETUP_PATH
+
+# Copia arquivos de configuração do Poetry
 COPY poetry.lock pyproject.toml ./
 
-# install runtime deps
-RUN poetry install --no-dev || (poetry check && poetry debug info)
+# Instala as dependências de runtime com o Poetry
+RUN poetry install --no-dev
 
-# install dev deps
-RUN poetry install || (poetry check && poetry debug info)
-
-# set work directory
+# Define o diretório de trabalho para o projeto
 WORKDIR /app
 
-# copy project files
+# Copia o código do projeto para dentro do contêiner
 COPY . /app/
 
-# expose port 8000
+# Expõe a porta 8000 para acesso ao servidor Django
 EXPOSE 8000
 
-# run server
+# Comando padrão para iniciar o servidor Django
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
