@@ -47,10 +47,10 @@ WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 
 # install runtime deps
-RUN poetry install --no-dev
+RUN poetry install --no-dev || (poetry check && poetry debug info)
 
 # install dev deps
-RUN poetry install
+RUN poetry install || (poetry check && poetry debug info)
 
 # set work directory
 WORKDIR /app
