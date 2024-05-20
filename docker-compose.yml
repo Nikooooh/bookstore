@@ -8,10 +8,16 @@ services:
       POSTGRES_DB: bookstore_db
       POSTGRES_USER: bookstore_user
       POSTGRES_PASSWORD: bookstore_password
+    networks:
+      - bookstore_network
     ports:
       - "5432:5432"
     volumes:
       - bookstore_data:/var/lib/postgresql/data
+
+networks:
+  bookstore_network:
+    driver: bridge
 
 volumes:
   bookstore_data:
