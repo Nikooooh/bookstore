@@ -6,9 +6,10 @@ authors = ["Nikooooh <nicolastrevis@hotmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
-django = "^5.0.6"
-djangorestframework = "^3.14.0"  # Adicionando a dependência do Django REST framework
+python = "^3.8"  # Atualizado para especificar uma versão compatível do Python
+
+django = "^3.2"  # Atualizado para a versão mais recente do Django 3.x
+djangorestframework = "^3.14.0"
 psycopg2-binary = "^2.9.9"
 
 [tool.poetry.group.dev.dependencies]
