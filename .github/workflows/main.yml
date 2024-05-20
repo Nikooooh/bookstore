@@ -4,58 +4,27 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      db:
-        image: postgres:13
-        env:
-          POSTGRES_DB: bookstore_db
-          POSTGRES_USER: bookstore_user
-          POSTGRES_PASSWORD: bookstore_password
-        ports:
-          - "5432:5432"
-
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.x
+          python-version: 3.12
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+          source $HOME/.poetry/env
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        run: poetry install --no-dev
 
-      - name: Run Django migrations
-        run: |
-          python manage.py migrate
-
-      - name: Run Django tests
-        run: |
-          python manage.py test
-
-      - name: Build and run Docker containers
-        run: |
-          docker-compose up -d --build
-
-      - name: Wait for containers to start
-        run: |
-          sleep 10
-
-      - name: Run API tests
-        run: |
-          # Run your API tests here
-
-      - name: Tear down Docker containers
-        run: |
-          docker-compose down
+      - name: Run tests
+        run: poetry run pytest
